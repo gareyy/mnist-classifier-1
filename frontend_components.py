@@ -159,7 +159,7 @@ class DrawGrid(AbstractGrid):
             dimensions,
             size
         )
-        self.griddata = np.zeros((size[0], size[1]))
+        self.griddata = np.zeros((size[0], size[1]), dtype=np.float32)
         self.bind_heldm1_callback(self.paint)
 
     def reset(self) -> None:
@@ -167,7 +167,7 @@ class DrawGrid(AbstractGrid):
         for i in range(self._dimensions[0]):
             for j in range(self._dimensions[1]):
                 self.color_cell((i, j), BLACK)
-        self.griddata = np.zeros((self._dimensions[0], self._dimensions[1]))
+        self.griddata = np.zeros((self._dimensions[0], self._dimensions[1]), np.float32)
 
     def paint(self, pos: tuple[int, int]) -> None:
         self.single_point_paint(pos)
@@ -180,7 +180,7 @@ class DrawGrid(AbstractGrid):
             return
         self.color_cell(pos, color)
         self.griddata[pos[0], pos[1]] += add
-        self.griddata[pos[0], pos[1]] = min(1.0, self.griddata[pos[0]][pos[1]])
+        self.griddata[pos[0], pos[1]] = min(np.float32(1.0), self.griddata[pos[0]][pos[1]])
 
     def get_griddata(self) -> np.ndarray:
         return self.griddata

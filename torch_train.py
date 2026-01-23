@@ -65,7 +65,6 @@ def test_loop(dataloader, model, loss_fn) -> float:
 
 
 if __name__ == "__main__":
-
     training_data = datasets.MNIST(
         root="data",
         train=True,
