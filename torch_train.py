@@ -24,7 +24,11 @@ class NeuralNetwork(nn.Module):
             nn.ReLU(),
             nn.Linear(HIDDEN_LAYER_SIZE, HIDDEN_LAYER_SIZE),
             nn.ReLU(),
-            nn.Linear(512, 10)
+            nn.Linear(HIDDEN_LAYER_SIZE, HIDDEN_LAYER_SIZE),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_LAYER_SIZE, HIDDEN_LAYER_SIZE),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_LAYER_SIZE, 10)
         )
 
     def forward(self, x):
@@ -44,9 +48,9 @@ def train_loop(dataloader, model, loss_fn, optimiser):
         optimiser.step()
         optimiser.zero_grad() # reset gradients
 
-        if batch % 100 == 0:
+        if batch % 1000 == 0:
             loss, current = loss.item(), batch * BATCH_SIZE + len(inputs)
-            print(f"loss: {loss:.3f} |{current}/{size}]")
+            print(f"loss: {loss:.8f} |{current}/{size}]")
 
 def test_loop(dataloader, model, loss_fn) -> float:
     model.eval()
@@ -60,7 +64,7 @@ def test_loop(dataloader, model, loss_fn) -> float:
             correct += (prediction.argmax(1) == expected_output.argmax(1).to(device)).type(torch.float).sum().item()
     test_loss /= num_batches
     correct /= size
-    print(f"Test Error: \n Accuracy: {(100*correct):.1f}%, Avg loss: {test_loss:.8f} \n")
+    print(f"Test Error: \n Accuracy: {(100*correct):.8f}%, Avg loss: {test_loss:.8f} \n")
     return correct
 
 

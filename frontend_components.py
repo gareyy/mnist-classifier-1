@@ -202,7 +202,7 @@ class ButtonSuite(ttk.Frame):
         self.reset_func = reset_func
         ttk.Button(self, text="Clear", command=self.reset_func).grid(column=0, row=0)
         ttk.Button(self, text="Guess", command=self.guess_func).grid(column=0, row=1, pady=10)
-        self.label = ttk.Label(self, text=INIT_LABEL)
+        self.label = ttk.Label(self, text=INIT_LABEL, width=35)
         self.label.grid(column=0, row=2, pady=10)
 
     def update_text(self, new_text: str) -> None:
