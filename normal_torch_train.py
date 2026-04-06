@@ -3,6 +3,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision.transforms import Lambda, ToTensor
+import numpy as np
 
 IMAGE_SIZE = 28
 HIDDEN_LAYER_SIZE = 512
@@ -21,10 +22,6 @@ class NeuralNetwork(nn.Module):
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(IMAGE_SIZE*IMAGE_SIZE, HIDDEN_LAYER_SIZE),
-            nn.ReLU(),
-            nn.Linear(HIDDEN_LAYER_SIZE, HIDDEN_LAYER_SIZE),
-            nn.ReLU(),
-            nn.Linear(HIDDEN_LAYER_SIZE, HIDDEN_LAYER_SIZE),
             nn.ReLU(),
             nn.Linear(HIDDEN_LAYER_SIZE, HIDDEN_LAYER_SIZE),
             nn.ReLU(),
@@ -67,8 +64,23 @@ def test_loop(dataloader, model, loss_fn) -> float:
     print(f"Test Error: \n Accuracy: {(100*correct):.8f}%, Avg loss: {test_loss:.8f} \n")
     return correct
 
+def dataset_to_torch(x, y):
+    full = []
+    for dp in zip(x, y):
+        xi = torch.from_numpy(np.array(dp[0]))
+        yi = torch.from_numpy(dp[1])
+        toadd = [xi, yi]
+        full.append(toadd)
+    full = torch.cat(full)
+
 
 if __name__ == "__main__":
+    # data per batch format, where n is the batch size
+    # expected_output: n one-hot encoded vectors of size 10, corresponding to label
+        # size is n, 10
+    # inputs: tensor of n elements, each containing 1 tensor, in each tensor is a 28x28 matrix.
+        # size is n, 1, 28, 28, all values between 0 and 1
+
     training_data = datasets.MNIST(
         root="data",
         train=True,
@@ -97,10 +109,10 @@ if __name__ == "__main__":
     accuracy = 0.0
     epoch_i = 1
 
-    while accuracy < 0.95:
+    while accuracy < 0.95 and epoch_i <= 100:
         print(f"EPOCH {epoch_i}")
         train_loop(train_dataloader, model, loss_fn, optimiser)
         accuracy = test_loop(test_dataloader, model, loss_fn)
         epoch_i += 1
-    torch.save(model.state_dict(), 'weights/model.dat')
+    torch.save(model.state_dict(), 'weights/normal_model.dat')
 

@@ -27,7 +27,7 @@ class TorchApplication(ttk.Frame):
         self.button_frame = ButtonSuite(self, reset_func=self.reset, guess_func=self.guess, padding=0)
         self.button_frame.grid(column=1, row=0)
         self.model = NeuralNetwork()
-        self.model.load_state_dict(torch.load("weights/model.dat", weights_only=True, map_location=device))
+        self.model.load_state_dict(torch.load("weights/oldmodel.dat", weights_only=True, map_location=device))
         self.model.eval()
         self.model.to(device)
 
@@ -40,9 +40,9 @@ class TorchApplication(ttk.Frame):
         print(griddata_as_torch)
         # educational note: model requires inputs of shape (N, 1, 28, 28), where N is the batch size
         # by reshaping to (1, 1, 28, 28), the input works with the model, otherwise it rejects it
-        prediction = softmax(self.model(griddata_as_torch.to(device))[0])
+        prediction = softmax(self.model(griddata_as_torch.to(device)), dim=1)[0]
         print(prediction)
-        output = f"{prediction.argmax(0).item()} at {prediction.max(0).values.item() * 100:.2f}% confidence"
+        output = f"{prediction.argmax(0).item()} at {prediction.max(0).values.item() * 100:.2f}% likelihood"
         self.button_frame.update_text(output)
 
 if __name__ == "__main__":
